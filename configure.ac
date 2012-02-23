@@ -4,7 +4,7 @@
 AC_PREREQ([2.68])
 AC_INIT([kNN], [0.1], [hyperair@gmail.com])
 AM_INIT_AUTOMAKE([foreign])
-AC_CONFIG_SRCDIR([main.cc])
+AC_CONFIG_SRCDIR([src/main.cc])
 
 # Checks for programs.
 AC_PROG_CXX
