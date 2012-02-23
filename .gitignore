@@ -1,0 +1,17 @@
+.deps
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+config.*
+configure
+depcomp
+install-sh
+missing
+stamp-h1
+*.o
+/po/Makefile*
+/po/POTFILES
+/po/*.pot
+/po/stamp-it
+/knn
