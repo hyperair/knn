@@ -12,12 +12,12 @@ entry::entry (const std::set<int> &dimensions,
 
 entry::value_type entry::operator[] (const index_type index) const
 {
-    if (dimensions.find (index) == dimensions.end ())
-        throw invalid_dimension (index);
-
     auto iter = values.find (index);
     if (iter != values.end ())
         return iter->second;
+
+    else if (dimensions.find (index) == dimensions.end ())
+        throw invalid_dimension (index);
 
     else
         return 0;
@@ -34,8 +34,8 @@ entry::value_type &entry::operator[] (const index_type index)
 void entry::visit (const std::function<void (index_type, value_type)> &functor)
     const
 {
-    for (auto i : values)
-        functor (i.first, i.second);
+    for (auto i : dimensions)
+        functor (i, (*this)[i]);
 }
 
 
