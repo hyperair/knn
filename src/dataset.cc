@@ -7,8 +7,9 @@ void dataset::insert (entry e, int clss)
     entries.push_back (std::make_pair (std::move (e), clss));
 }
 
-void dataset::visit (const std::function<void (entry, int)> functor)
+void
+dataset::visit (const std::function<void (const entry &, int)> &functor) const
 {
-    for (std::pair<entry, int> &i : entries)
+    for (const std::pair<entry, int> &i : entries)
         functor (i.first, i.second);
 }

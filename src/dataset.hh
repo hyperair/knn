@@ -15,9 +15,10 @@ namespace knn
 
         void insert (entry e, int clss);
 
-        void visit (std::function<void(entry, int)> functor);
+        void
+        visit (const std::function<void(const entry &, int)> &functor) const;
 
-        std::set<int> dimensions () {return _dimensions;}
+        std::set<int> dimensions () const {return _dimensions;}
 
     private:
         std::list<std::pair<entry, int> > entries;
