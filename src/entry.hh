@@ -10,26 +10,31 @@ namespace knn
     class entry
     {
     public:
-        entry (const std::set<int> &dimensions,
-               std::map<int, double> values);
-        double operator[] (int index) const;
+        typedef int index_type;
+        typedef double value_type;
+
+        entry (const std::set<index_type> &dimensions,
+               std::map<index_type, value_type> values);
+
+        value_type operator[] (index_type index) const;
+        value_type &operator[] (index_type index);
 
     private:
-        const std::map<int, double>  values;
-        const std::set<int>         &dimensions;
+        std::map<index_type, value_type>  values;
+        const std::set<index_type>         &dimensions;
     };
 
     class invalid_dimension : public std::exception
     {
     public:
-        invalid_dimension (int dimension);
+        invalid_dimension (entry::index_type dimension);
 
         // override from std::exception
         virtual const char *what () const throw ();
-        int dimension () const {return _dimension;}
+        entry::index_type dimension () const {return _dimension;}
 
     private:
-        const int _dimension;
+        const entry::index_type _dimension;
     };
 }
 

@@ -10,7 +10,7 @@ entry::entry (const std::set<int> &dimensions,
     dimensions (dimensions)
 {}
 
-double entry::operator[] (const int index) const
+entry::value_type entry::operator[] (const index_type index) const
 {
     if (dimensions.find (index) == dimensions.end ())
         throw invalid_dimension (index);
@@ -23,8 +23,16 @@ double entry::operator[] (const int index) const
         return 0;
 }
 
+entry::value_type &entry::operator[] (const index_type index)
+{
+    if (dimensions.find (index) == dimensions.end ())
+        throw invalid_dimension (index);
+
+    return values[index];
+}
+
 
-invalid_dimension::invalid_dimension (const int dimension) :
+invalid_dimension::invalid_dimension (const entry::index_type dimension) :
     _dimension (dimension)
 {}
 

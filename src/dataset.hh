@@ -11,16 +11,23 @@ namespace knn
     class dataset
     {
     public:
-        void insert (entry e, int clss);
+        typedef entry::index_type index_type;
+        typedef entry::value_type value_type;
+        typedef int class_type;
 
-        void
-        visit (const std::function<void(const entry &, int)> &functor) const;
+        void insert (entry e, class_type clss);
+        void normalize ();
 
-        std::set<int> dimensions () const {return _dimensions;}
+        void visit (const std::function<void(const entry &,
+                                             class_type)> &functor) const;
+        void visit (const std::function<void(entry &, class_type)> &functor);
+
+
+        std::set<index_type> dimensions () const {return _dimensions;}
 
     private:
-        std::list<std::pair<entry, int> > entries;
-        std::set<int> _dimensions;
+        std::list<std::pair<entry, class_type> > entries;
+        std::set<index_type> _dimensions;
     };
 }
 
