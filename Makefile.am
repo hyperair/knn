@@ -7,7 +7,9 @@ knn_SOURCES =					\
 	src/dataset.hh				\
 	src/dataset.cc				\
 	src/parser.hh				\
-	src/parser.cc
+	src/parser.cc				\
+	src/metrics.hh				\
+	src/metrics.cc
 
 knn_LDADD = \
 	-lboost_program_options
