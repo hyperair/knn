@@ -11,8 +11,6 @@ namespace knn
     class dataset
     {
     public:
-        dataset ();
-
         void insert (entry e, int clss);
 
         void
