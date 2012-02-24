@@ -3,6 +3,8 @@
 #include <iostream>
 #include <functional>
 
+#include <parser.hh>
+
 namespace bpo = boost::program_options;
 
 namespace {
@@ -80,6 +82,8 @@ int main (int argc, char **argv)
               << "training_set_file = " << training_set_file << std::endl
               << "test_set_file = " << test_set_file << std::endl;
 
+    knn::dataset dataset = knn::parse_file (training_set_file);
+    dataset.normalize ();
 
     return 0;
 }
