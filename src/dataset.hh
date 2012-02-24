@@ -23,7 +23,7 @@ namespace knn
         void visit (const std::function<void(entry &, class_type)> &functor);
 
 
-        std::set<index_type> dimensions () const {return _dimensions;}
+        const std::set<index_type> &dimensions () const {return _dimensions;}
 
     private:
         std::list<std::pair<entry, class_type> > entries;
