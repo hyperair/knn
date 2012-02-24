@@ -4,9 +4,26 @@
 
 using knn::dataset;
 
+dataset::dataset () :
+    _dimensions (new std::set<index_type>)
+{}
+
+dataset::dataset (const dataset &other) :
+    entries (other.entries),
+    _dimensions (new std::set<index_type> (*other._dimensions))
+{}
+
+dataset &dataset::operator= (dataset copy)
+{
+    entries = std::move (copy.entries);
+    _dimensions = std::move (copy._dimensions);
+
+    return *this;
+}
+
 void dataset::insert (entry e, class_type clss)
 {
-    e.visit ([&] (index_type idx, value_type) {_dimensions.insert (idx);});
+    e.visit ([&] (index_type idx, value_type) {_dimensions->insert (idx);});
     entries.push_back (std::make_pair (std::move (e), clss));
 }
 
@@ -52,7 +69,7 @@ void dataset::normalize ()
     // First pass: accumulate min and max
     visit ([&] (const entry &entry, class_type)
            {
-               for (const index_type i : _dimensions) {
+               for (const index_type i : *_dimensions) {
                    minmax &m = minmax_map[i];
 
                    m.min = std::min (m.min, entry[i]);

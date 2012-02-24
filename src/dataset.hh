@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <list>
+#include <memory>
 
 #include <entry.hh>
 
@@ -15,19 +16,25 @@ namespace knn
         typedef entry::value_type value_type;
         typedef int class_type;
 
+        dataset ();
+        dataset (const dataset &);
+        dataset (dataset &&) = default;
+
+        dataset &operator= (dataset);
+
         void insert (entry e, class_type clss);
         void normalize ();
 
-        void visit (const std::function<void(const entry &,
-                                             class_type)> &functor) const;
-        void visit (const std::function<void(entry &, class_type)> &functor);
+        void visit (const std::function<void (const entry &,
+                                              class_type)> &functor) const;
+        void visit (const std::function<void (entry &, class_type)> &functor);
 
 
-        const std::set<index_type> &dimensions () const {return _dimensions;}
+        const std::set<index_type> &dimensions () const {return *_dimensions;}
 
     private:
         std::list<std::pair<entry, class_type> > entries;
-        std::set<index_type> _dimensions;
+        std::unique_ptr<std::set<index_type> > _dimensions;
     };
 }
 
