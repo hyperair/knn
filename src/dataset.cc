@@ -6,6 +6,7 @@ using knn::dataset;
 
 void dataset::insert (entry e, class_type clss)
 {
+    e.visit ([&] (index_type idx, value_type) {_dimensions.insert (idx);});
     entries.push_back (std::make_pair (std::move (e), clss));
 }
 
