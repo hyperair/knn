@@ -4,6 +4,7 @@
 #include <set>
 #include <map>
 #include <exception>
+#include <functional>
 
 namespace knn
 {
@@ -18,6 +19,9 @@ namespace knn
 
         value_type operator[] (index_type index) const;
         value_type &operator[] (index_type index);
+
+        void visit (const std::function<void (index_type,
+                                              value_type)> &functor) const;
 
     private:
         std::map<index_type, value_type>  values;

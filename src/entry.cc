@@ -31,6 +31,13 @@ entry::value_type &entry::operator[] (const index_type index)
     return values[index];
 }
 
+void entry::visit (const std::function<void (index_type, value_type)> &functor)
+    const
+{
+    for (auto i : values)
+        functor (i.first, i.second);
+}
+
 
 invalid_dimension::invalid_dimension (const entry::index_type dimension) :
     _dimension (dimension)
