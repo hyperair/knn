@@ -4,13 +4,13 @@
 using knn::entry;
 using knn::invalid_dimension;
 
-entry::entry (const std::set<double> &dimensions,
-              std::map<double, double> values) :
+entry::entry (const std::set<int> &dimensions,
+              std::map<int, double> values) :
     values (std::move (values)),
     dimensions (dimensions)
 {}
 
-double entry::operator[] (const double index) const
+double entry::operator[] (const int index) const
 {
     if (dimensions.find (index) == dimensions.end ())
         throw invalid_dimension (index);
@@ -24,7 +24,7 @@ double entry::operator[] (const double index) const
 }
 
 
-invalid_dimension::invalid_dimension (const double dimension) :
+invalid_dimension::invalid_dimension (const int dimension) :
     _dimension (dimension)
 {}
 

@@ -10,26 +10,26 @@ namespace knn
     class entry
     {
     public:
-        entry (const std::set<double> &dimensions,
-               std::map<double, double> values);
-        double operator[] (double index) const;
+        entry (const std::set<int> &dimensions,
+               std::map<int, double> values);
+        double operator[] (int index) const;
 
     private:
-        const std::map<double, double>  values;
-        const std::set<double>         &dimensions;
+        const std::map<int, double>  values;
+        const std::set<int>         &dimensions;
     };
 
     class invalid_dimension : public std::exception
     {
     public:
-        invalid_dimension (double dimension);
+        invalid_dimension (int dimension);
 
         // override from std::exception
         virtual const char *what () const throw ();
-        double dimension () const {return _dimension;}
+        int dimension () const {return _dimension;}
 
     private:
-        const double _dimension;
+        const int _dimension;
     };
 }
 
