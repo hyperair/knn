@@ -6,6 +6,8 @@ AC_INIT([kNN], [0.1], [hyperair@gmail.com])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([src/main.cc])
 
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
 # Checks for programs.
 AC_PROG_CXX
 AC_LANG([C++])
