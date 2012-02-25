@@ -39,3 +39,12 @@ void dataset::visit (const std::function<void (entry &, class_type)> &functor)
     for (std::pair<entry, class_type> &i : entries)
         functor (i.first, i.second);
 }
+
+std::ostream &knn::operator<< (std::ostream &out, const dataset &data)
+{
+    data.visit ([&] (const entry &e, dataset::class_type clss)
+                {
+                    out << clss << ' ' << e << std::endl;
+                });
+    return out;
+}

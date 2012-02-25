@@ -5,6 +5,7 @@
 #include <map>
 #include <exception>
 #include <functional>
+#include <iostream>
 
 namespace knn
 {
@@ -41,6 +42,8 @@ namespace knn
     private:
         const entry::index_type _dimension;
     };
+
+    std::ostream &operator<< (std::ostream &out, const entry &e);
 }
 
 // Template implementation

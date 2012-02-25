@@ -4,6 +4,7 @@
 #include <functional>
 #include <list>
 #include <memory>
+#include <iostream>
 
 #include <entry.hh>
 
@@ -35,6 +36,8 @@ namespace knn
         std::list<std::pair<entry, class_type> > entries;
         std::unique_ptr<std::set<index_type> > _dimensions;
     };
+
+    std::ostream &operator<< (std::ostream &out, const dataset &data);
 }
 
 

@@ -33,6 +33,15 @@ void entry::visit (const std::function<void (index_type, value_type)> &functor)
         functor (i.first, i.second);
 }
 
+std::ostream &knn::operator<< (std::ostream &out, const entry &e)
+{
+    e.visit ([&] (const entry::index_type index, const entry::value_type value)
+             {
+                 out << index << ':' << value << ' ';
+             });
+    return out;
+}
+
 
 invalid_dimension::invalid_dimension (const entry::index_type dimension) :
     _dimension (dimension)
