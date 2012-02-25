@@ -4,18 +4,19 @@
 #include <cassert>
 #include <parser.hh>
 
-knn::dataset knn::parse_file (const std::string &path)
+typedef std::map<knn::entry::index_type,
+                 knn::entry::value_type> valuemap_type;
+void knn::visit_file (const std::string &path,
+                      const std::function<void (valuemap_type &&,
+                                                dataset::class_type)> &visitor)
 {
-    dataset retval;
-    auto &dimensions = retval.dimensions ();
-
     std::ifstream file (path);
     std::string line;
 
     while (getline (file, line)) {
         std::istringstream ss (line);
 
-        std::map<entry::index_type, entry::value_type> values;
+        valuemap_type values;
 
         dataset::class_type clss;
         ss >> clss;
@@ -34,8 +35,19 @@ knn::dataset knn::parse_file (const std::string &path)
             values.insert ({index, value});
         }
 
-        retval.insert ({dimensions, std::move (values)}, clss);
+        visitor (std::move (values), clss);
     }
+}
+
+knn::dataset knn::parse_file (const std::string &path)
+{
+    dataset retval;
+    auto &dimensions = retval.dimensions ();
+
+    visit_file (path, [&] (valuemap_type &&values, dataset::class_type clss)
+                {
+                    retval.insert ({dimensions, values}, clss);
+                });
 
     return std::move (retval);
 }
