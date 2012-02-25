@@ -7,7 +7,7 @@
 typedef std::map<knn::entry::index_type,
                  knn::entry::value_type> valuemap_type;
 void knn::visit_file (const std::string &path,
-                      const std::function<void (valuemap_type &&,
+                      const std::function<void (entry &&,
                                                 dataset::class_type)> &visitor)
 {
     std::ifstream file (path);
@@ -35,7 +35,7 @@ void knn::visit_file (const std::string &path,
             values.insert ({index, value});
         }
 
-        visitor (std::move (values), clss);
+        visitor (entry (values), clss);
     }
 }
 
@@ -43,9 +43,9 @@ knn::dataset knn::parse_file (const std::string &path)
 {
     dataset retval;
 
-    visit_file (path, [&] (valuemap_type &&values, dataset::class_type clss)
+    visit_file (path, [&] (entry &&entry, dataset::class_type clss)
                 {
-                    retval.insert (entry {values}, clss);
+                    retval.insert (entry, clss);
                 });
 
     const auto &dimensions = retval.dimensions ();
