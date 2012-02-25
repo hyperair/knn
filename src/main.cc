@@ -79,7 +79,6 @@ int main (int argc, char **argv)
     if (metric != "euclidean" && metric != "cosine")
         usage (argv[0], desc);
 
-    // TODO: replace this with actual logic
     std::cout << "k = " << k << std::endl
               << "metric = " << metric << std::endl
               << "training_set_file = " << training_set_file << std::endl
@@ -100,6 +99,18 @@ int main (int argc, char **argv)
                                 &knn::metrics::cosine,
                                 training);
 
+    int total = 0;
+    int correct = 0;
+    test.visit ([&] (const knn::entry &e, knn::dataset::class_type clss)
+                {
+                    ++total;
 
+                    if (clss == classifier.classify (e))
+                        ++correct;
+                });
+
+    std::cout << "Correctly classified " << correct << " out of " << total
+              << " entries, with an accuracy of "
+              << (double (correct) / total * 100) << std::endl;
     return 0;
 }
