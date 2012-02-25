@@ -6,6 +6,7 @@
 #include <parser.hh>
 #include <classifier.hh>
 #include <metrics.hh>
+#include <normalizer.hh>
 
 namespace bpo = boost::program_options;
 
@@ -85,7 +86,13 @@ int main (int argc, char **argv)
               << "test_set_file = " << test_set_file << std::endl;
 
     knn::dataset training = knn::parse_file (training_set_file);
-    training.normalize ();
+    knn::dataset test = knn::parse_file (test_set_file);
+
+    knn::normalizer normalizer;
+    normalizer.scan (training);
+    normalizer.scan (test);
+    normalizer.apply (training);
+    normalizer.apply (test);
 
     knn::classifier classifier (k,
                                 metric == "euclidean" ?
@@ -93,9 +100,6 @@ int main (int argc, char **argv)
                                 &knn::metrics::cosine,
                                 training);
 
-
-    knn::dataset test = knn::parse_file (test_set_file);
-    test.normalize ();          // TODO: Normalize both datasets together
 
     return 0;
 }

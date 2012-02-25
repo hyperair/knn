@@ -11,7 +11,9 @@ knn_SOURCES =					\
 	src/metrics.hh				\
 	src/metrics.cc				\
 	src/classifier.hh			\
-	src/classifier.cc
+	src/classifier.cc			\
+	src/normalizer.hh			\
+	src/normalizer.cc
 
 knn_LDADD = \
 	-lboost_program_options

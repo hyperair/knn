@@ -23,7 +23,6 @@ namespace knn
         dataset &operator= (dataset);
 
         void insert (entry e, class_type clss);
-        void normalize ();
 
         void visit (const std::function<void (const entry &,
                                               class_type)> &functor) const;
