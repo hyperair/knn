@@ -1,4 +1,5 @@
 #include <functional>
+#include <cassert>
 #include <classifier.hh>
 
 using knn::classifier;
@@ -48,13 +49,15 @@ void distances_list::insert (const double distance,
     int j = 0;
 
     // Insert sorted
-    while (i != distances.end () && ++j < k && i->first < distance)
+    while (i != distances.end () && j < k && i->first < distance) {
         ++i;
+        ++j;
+    }
 
     if (j >= k)
         return;
 
-    distances.insert (i, {distance, clss});
+    i = distances.insert (i, {distance, clss});
 
     // Find (k-1)'th element
     while (++i != distances.end () && ++j < k);
@@ -67,10 +70,12 @@ classifier::class_type distances_list::most_frequent_class () const
 {
     std::map<classifier::class_type, int> votes;
 
+    assert (!distances.empty ());
+
     for (auto i : distances)
         ++votes[i.second];
 
-    classifier::class_type retval;
+    classifier::class_type retval = 0;
     int max_votes = 0;
 
     for (auto i : votes)
