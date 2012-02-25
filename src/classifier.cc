@@ -69,7 +69,7 @@ classifier::class_type distances_list::most_frequent_class () const
     std::map<classifier::class_type, int> votes;
 
     for (auto i : distances)
-        ++votes[i.first];
+        ++votes[i.second];
 
     classifier::class_type retval;
     int max_votes = 0;
