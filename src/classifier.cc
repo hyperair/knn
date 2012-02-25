@@ -48,14 +48,13 @@ void distances_list::insert (const double distance,
     int j = 0;
 
     // Insert sorted
-    while (i != distances.end () && ++j < k) {
-        if (i->first > distance) {
-            distances.insert (i, {distance, clss});
-            break;
-        }
-
+    while (i != distances.end () && ++j < k && i->first < distance)
         ++i;
-    }
+
+    if (j >= k)
+        return;
+
+    distances.insert (i, {distance, clss});
 
     // Find (k-1)'th element
     while (++i != distances.end () && ++j < k);
