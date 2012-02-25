@@ -14,8 +14,7 @@ namespace knn
         typedef int index_type;
         typedef double value_type;
 
-        entry (const std::set<index_type> &dimensions,
-               std::map<index_type, value_type> values);
+        explicit entry (std::map<index_type, value_type> values);
 
         value_type operator[] (index_type index) const;
         value_type &operator[] (index_type index);
@@ -23,9 +22,11 @@ namespace knn
         void visit (const std::function<void (index_type,
                                               value_type)> &functor) const;
 
+        template <typename Iterator>
+        void expand_dimensions (Iterator begin, const Iterator &end);
+
     private:
         std::map<index_type, value_type>  values;
-        const std::set<index_type>         &dimensions;
     };
 
     class invalid_dimension : public std::exception
@@ -40,6 +41,15 @@ namespace knn
     private:
         const entry::index_type _dimension;
     };
+}
+
+// Template implementation
+template <typename Iterator>
+void knn::entry::expand_dimensions (Iterator begin, const Iterator &end)
+{
+    for (; begin != end; ++begin)
+        if (values.find (*begin) == values.end ())
+            values.insert ({*begin, 0});
 }
 
 #endif  // ENTRY_HH

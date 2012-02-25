@@ -42,12 +42,18 @@ void knn::visit_file (const std::string &path,
 knn::dataset knn::parse_file (const std::string &path)
 {
     dataset retval;
-    auto &dimensions = retval.dimensions ();
 
     visit_file (path, [&] (valuemap_type &&values, dataset::class_type clss)
                 {
-                    retval.insert ({dimensions, values}, clss);
+                    retval.insert (entry {values}, clss);
                 });
+
+    const auto &dimensions = retval.dimensions ();
+    retval.visit ([&] (entry &e, dataset::class_type)
+                  {
+                      e.expand_dimensions (dimensions.begin (),
+                                           dimensions.end ());
+                  });
 
     return std::move (retval);
 }
