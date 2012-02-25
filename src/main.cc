@@ -93,12 +93,6 @@ int main (int argc, char **argv)
     normalizer.apply (training);
     normalizer.apply (test);
 
-    std::cout << "training dump:" << std::endl
-              << training << std::endl
-              << "test dump:" << std::endl
-              << test << std::endl;
-
-#if 0
     knn::classifier classifier (k,
                                 metric == "euclidean" ?
                                 &knn::metrics::euclidean :
@@ -118,6 +112,5 @@ int main (int argc, char **argv)
     std::cout << "Correctly classified " << correct << " out of " << total
               << " entries, with an accuracy of "
               << (double (correct) / total * 100) << std::endl;
-#endif
     return 0;
 }
