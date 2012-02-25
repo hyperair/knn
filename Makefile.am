@@ -21,3 +21,7 @@ knn_LDADD = \
 knn_CXXFLAGS =					\
 	-std=c++0x				\
 	-Isrc/
+
+if ENABLE_WARNINGS
+knn_CXXFLAGS += -Wall -Wextra -Werror -pedantic
+endif

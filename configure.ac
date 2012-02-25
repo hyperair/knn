@@ -14,6 +14,12 @@ AC_LANG([C++])
 AC_CHECK_HEADERS([boost/program_options.hpp], [],
                  [AC_MSG_ERROR([You need the Boost.Program_Options library])])
 
+AC_ARG_ENABLE([warnings],
+              [AS_HELP_STRING([--enable-warnings=yes], [Enable extra warning flags])],,
+              [enable_warnings=yes])
+
+AM_CONDITIONAL([ENABLE_WARNINGS], [test "$enable_warnings" = "yes"])
+
 AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
