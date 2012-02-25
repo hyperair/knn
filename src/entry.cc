@@ -1,8 +1,8 @@
 #include <utility>
+#include <cassert>
 #include <entry.hh>
 
 using knn::entry;
-using knn::invalid_dimension;
 
 entry::entry (std::map<int, double> values) :
     values (std::move (values))
@@ -12,16 +12,14 @@ entry::value_type entry::operator[] (const index_type index) const
 {
     auto iter = values.find (index);
 
-    if (iter == values.end ())
-        throw invalid_dimension (index);
+    assert (iter != values.end ());
 
     return iter->second;
 }
 
 entry::value_type &entry::operator[] (const index_type index)
 {
-    if (values.find (index) == values.end ())
-        throw invalid_dimension (index);
+    assert (values.find (index) != values.end ());
 
     return values[index];
 }
@@ -40,14 +38,4 @@ std::ostream &knn::operator<< (std::ostream &out, const entry &e)
                  out << index << ':' << value << ' ';
              });
     return out;
-}
-
-
-invalid_dimension::invalid_dimension (const entry::index_type dimension) :
-    _dimension (dimension)
-{}
-
-const char *invalid_dimension::what () const throw ()
-{
-    return "Attempted to access dimension not present in data set";
 }

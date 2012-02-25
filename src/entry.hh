@@ -30,19 +30,6 @@ namespace knn
         std::map<index_type, value_type>  values;
     };
 
-    class invalid_dimension : public std::exception
-    {
-    public:
-        invalid_dimension (entry::index_type dimension);
-
-        // override from std::exception
-        virtual const char *what () const throw ();
-        entry::index_type dimension () const {return _dimension;}
-
-    private:
-        const entry::index_type _dimension;
-    };
-
     std::ostream &operator<< (std::ostream &out, const entry &e);
 }
 
