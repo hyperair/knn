@@ -13,7 +13,7 @@ double knn::metrics::euclidean (const entry &e1, const entry &e2)
     return sq_sum;
 }
 
-double knn::metrics::cosine (const entry &e1, const entry &e2)
+double knn::metrics::cosine (const entry &, const entry &)
 {
     // TODO: Implement
     return double ();
