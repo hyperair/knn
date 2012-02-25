@@ -111,6 +111,6 @@ int main (int argc, char **argv)
 
     std::cout << "Correctly classified " << correct << " out of " << total
               << " entries, with an accuracy of "
-              << (double (correct) / total * 100) << std::endl;
+              << (double (correct) / total * 100) << '%' << std::endl;
     return 0;
 }
