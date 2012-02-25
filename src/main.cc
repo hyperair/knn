@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <functional>
+#include <chrono>
 
 #include <parser.hh>
 #include <classifier.hh>
@@ -101,6 +102,8 @@ int main (int argc, char **argv)
 
     int total = 0;
     int correct = 0;
+
+    auto start_time = std::chrono::high_resolution_clock::now ();
     test.visit ([&] (const knn::entry &e, knn::dataset::class_type clss)
                 {
                     ++total;
@@ -108,9 +111,13 @@ int main (int argc, char **argv)
                     if (clss == classifier.classify (e))
                         ++correct;
                 });
+    auto end_time = std::chrono::high_resolution_clock::now ();
 
     std::cout << "Correctly classified " << correct << " out of " << total
               << " entries, with an accuracy of "
               << (double (correct) / total * 100) << '%' << std::endl;
+    std::cout << "Time taken: "
+              << std::chrono::nanoseconds (end_time - start_time).count ()
+              << "ns." << std::endl;
     return 0;
 }
