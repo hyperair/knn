@@ -9,7 +9,9 @@ knn_SOURCES =					\
 	src/parser.hh				\
 	src/parser.cc				\
 	src/metrics.hh				\
-	src/metrics.cc
+	src/metrics.cc				\
+	src/classifier.hh			\
+	src/classifier.cc
 
 knn_LDADD = \
 	-lboost_program_options
