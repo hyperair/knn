@@ -42,7 +42,7 @@ void knn::entry::visit (const Functor &functor) const
 }
 
 template <typename Iterator>
-void knn::entry::expand_dimensions (Iterator begin, const Iterator &end)
+inline void knn::entry::expand_dimensions (Iterator begin, const Iterator &end)
 {
     for (; begin != end; ++begin)
         if (values.find (*begin) == values.end ())
