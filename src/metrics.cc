@@ -3,7 +3,7 @@
 
 double knn::metrics::euclidean (const entry &e1, const entry &e2)
 {
-    double sq_sum;
+    double sq_sum = 0.0;
 
     e1.visit ([&] (const entry::index_type index, const entry::value_type value)
               {
