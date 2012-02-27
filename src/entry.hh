@@ -20,8 +20,8 @@ namespace knn
         value_type operator[] (index_type index) const;
         value_type &operator[] (index_type index);
 
-        void visit (const std::function<void (index_type,
-                                              value_type)> &functor) const;
+        template <typename Functor>
+        void visit (const Functor &functor) const;
 
         template <typename Iterator>
         void expand_dimensions (Iterator begin, const Iterator &end);
@@ -34,6 +34,13 @@ namespace knn
 }
 
 // Template implementation
+template <typename Functor>
+void knn::entry::visit (const Functor &functor) const
+{
+    for (const std::pair<index_type, value_type> &i : values)
+        functor (i.first, i.second);
+}
+
 template <typename Iterator>
 void knn::entry::expand_dimensions (Iterator begin, const Iterator &end)
 {

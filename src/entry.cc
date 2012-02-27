@@ -24,13 +24,6 @@ entry::value_type &entry::operator[] (const index_type index)
     return values[index];
 }
 
-void entry::visit (const std::function<void (index_type, value_type)> &functor)
-    const
-{
-    for (auto i : values)
-        functor (i.first, i.second);
-}
-
 std::ostream &knn::operator<< (std::ostream &out, const entry &e)
 {
     e.visit ([&] (const entry::index_type index, const entry::value_type value)

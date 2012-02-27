@@ -25,9 +25,11 @@ namespace knn
 
         void insert (entry e, class_type clss);
 
-        void visit (const std::function<void (const entry &,
-                                              class_type)> &functor) const;
-        void visit (const std::function<void (entry &, class_type)> &functor);
+        template <typename Functor>
+        void visit (const Functor &functor) const;
+
+        template <typename Functor>
+        void visit (const Functor &functor);
 
 
         const std::set<index_type> &dimensions () const {return *_dimensions;}
@@ -38,6 +40,21 @@ namespace knn
     };
 
     std::ostream &operator<< (std::ostream &out, const dataset &data);
+}
+
+// inline functions
+template <typename Functor>
+inline void knn::dataset::visit (const Functor &functor) const
+{
+    for (const std::pair<entry, class_type> &i : entries)
+        functor (i.first, i.second);
+}
+
+template <typename Functor>
+inline void knn::dataset::visit (const Functor &functor)
+{
+    for (std::pair<entry, class_type> &i : entries)
+        functor (i.first, i.second);
 }
 
 

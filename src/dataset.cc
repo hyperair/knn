@@ -27,19 +27,6 @@ void dataset::insert (entry e, class_type clss)
     entries.push_back (std::make_pair (std::move (e), clss));
 }
 
-void dataset::visit (const std::function<void (const entry &,
-                                               class_type)> &functor) const
-{
-    for (const std::pair<entry, class_type> &i : entries)
-        functor (i.first, i.second);
-}
-
-void dataset::visit (const std::function<void (entry &, class_type)> &functor)
-{
-    for (std::pair<entry, class_type> &i : entries)
-        functor (i.first, i.second);
-}
-
 std::ostream &knn::operator<< (std::ostream &out, const dataset &data)
 {
     data.visit ([&] (const entry &e, dataset::class_type clss)
