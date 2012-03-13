@@ -11,8 +11,8 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 # Checks for programs.
 AC_PROG_CXX
 AC_LANG([C++])
-AC_CHECK_HEADERS([boost/program_options.hpp], [],
-                 [AC_MSG_ERROR([You need the Boost.Program_Options library])])
+AX_BOOST_BASE([1.46])
+AX_BOOST_PROGRAM_OPTIONS
 
 AC_ARG_ENABLE([warnings],
               [AS_HELP_STRING([--enable-warnings=yes], [Enable extra warning flags])],,

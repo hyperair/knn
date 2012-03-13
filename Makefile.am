@@ -16,7 +16,7 @@ knn_SOURCES =					\
 	src/normalizer.cc
 
 knn_LDADD = \
-	-lboost_program_options
+	$(BOOST_PROGRAM_OPTIONS_LIB)
 
 knn_CXXFLAGS =					\
 	-std=c++0x				\
