@@ -15,8 +15,8 @@ AX_BOOST_BASE([1.46])
 AX_BOOST_PROGRAM_OPTIONS
 
 AC_ARG_ENABLE([warnings],
-              [AS_HELP_STRING([--enable-warnings=yes], [Enable extra warning flags])],,
-              [enable_warnings=yes])
+              [AS_HELP_STRING([--enable-warnings], [Enable extra warning flags])],,
+              [enable_warnings=no])
 
 AM_CONDITIONAL([ENABLE_WARNINGS], [test "$enable_warnings" = "yes"])
 
