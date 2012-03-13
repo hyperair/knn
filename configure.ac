@@ -11,13 +11,19 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 # Checks for programs.
 AC_PROG_CXX
 AC_LANG([C++])
+
+# Check for Boost and Boost::Program_Options
 AX_BOOST_BASE([1.46])
 AX_BOOST_PROGRAM_OPTIONS
+if test "$with_boost_program_options" = no; then
+    AC_MSG_ERROR([Boost::Program_Options is needed to parse the arguments for this program])
+fi
 
 AC_ARG_ENABLE([warnings],
               [AS_HELP_STRING([--enable-warnings], [Enable extra warning flags])],,
               [enable_warnings=no])
 
+# Optionally enable strict warnings
 AM_CONDITIONAL([ENABLE_WARNINGS], [test "$enable_warnings" = "yes"])
 
 AC_CONFIG_FILES([Makefile])
