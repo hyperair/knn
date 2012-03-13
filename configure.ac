@@ -22,7 +22,7 @@ fi
 # Check for Boost and Boost::Program_Options
 AX_BOOST_BASE([1.46])
 AX_BOOST_PROGRAM_OPTIONS
-if test "$with_boost_program_options" = no; then
+if test "$with_boost_program_options" = no -o "$ac_cv_boost_program_options" = no; then
     AC_MSG_ERROR([Boost::Program_Options is needed to parse the arguments for this program])
 fi
 
