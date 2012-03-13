@@ -26,11 +26,10 @@ if test "$with_boost_program_options" = no; then
     AC_MSG_ERROR([Boost::Program_Options is needed to parse the arguments for this program])
 fi
 
+# Optionally enable strict warnings
 AC_ARG_ENABLE([warnings],
               [AS_HELP_STRING([--enable-warnings], [Enable extra warning flags])],,
               [enable_warnings=no])
-
-# Optionally enable strict warnings
 AM_CONDITIONAL([ENABLE_WARNINGS], [test "$enable_warnings" = "yes"])
 
 AC_CONFIG_FILES([Makefile])
