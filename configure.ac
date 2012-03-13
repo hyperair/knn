@@ -12,6 +12,13 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_PROG_CXX
 AC_LANG([C++])
 
+AC_ARG_ENABLE([static],
+              [AS_HELP_STRING([--enable-static], [Link knn statically])],,
+              [enable_static=no])
+if test "$enable_static" = "yes"; then
+    export LDFLAGS="$LDFLAGS -static"
+fi
+
 # Check for Boost and Boost::Program_Options
 AX_BOOST_BASE([1.46])
 AX_BOOST_PROGRAM_OPTIONS
