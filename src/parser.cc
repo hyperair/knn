@@ -11,6 +11,11 @@ void knn::visit_file (const std::string &path,
                                                 dataset::class_type)> &visitor)
 {
     std::ifstream file (path);
+
+    if (!file) {
+        throw file_open_exception (path);
+    }
+
     std::string line;
 
     while (getline (file, line)) {
