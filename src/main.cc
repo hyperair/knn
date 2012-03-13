@@ -117,7 +117,7 @@ int main (int argc, char **argv)
               << " entries, with an accuracy of "
               << (double (correct) / total * 100) << '%' << std::endl;
     std::cout << "Time taken: "
-              << std::chrono::duration<double > (end_time - start_time).count ()
+              << std::chrono::duration<double> (end_time - start_time).count ()
               << "s." << std::endl;
     return 0;
 }
