@@ -19,8 +19,16 @@ knn_LDADD = \
 	$(BOOST_PROGRAM_OPTIONS_LIB)
 
 knn_CXXFLAGS =					\
-	-std=c++0x				\
-	-Isrc/
+	-std=c++0x
+
+knn_CPPFLAGS =					\
+	-Isrc/					\
+	$(BOOST_CPPFLAGS)
+
+knn_LDFLAGS =					\
+	$(BOOST_LDFLAGS)
+
+
 
 if ENABLE_WARNINGS
 knn_CXXFLAGS += -Wall -Wextra -Werror -pedantic
