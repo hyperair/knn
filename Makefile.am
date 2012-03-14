@@ -22,7 +22,7 @@ knn_CXXFLAGS =					\
 	-std=c++0x
 
 knn_CPPFLAGS =					\
-	-Isrc/					\
+	-I$(srcdir)/src/			\
 	$(BOOST_CPPFLAGS)
 
 knn_LDFLAGS =					\
