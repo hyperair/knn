@@ -3,6 +3,8 @@
 #include <classifier.hh>
 
 using knn::classifier;
+using knn::simple_classifier;
+using knn::tree_classifier;
 
 namespace {
     class distances_list
@@ -19,25 +21,6 @@ namespace {
     };
 }
 
-
-classifier::classifier (const int k, metric_type metric,
-                        const dataset &data) :
-    k (k), metric (std::move (metric)), data (data)
-{}
-
-classifier::class_type classifier::classify (const entry &e2) const
-{
-    distances_list distances (k);
-
-    data.visit ([&] (const entry &e1, class_type clss)
-                {
-                    distances.insert (metric (e1, e2), clss);
-                });
-
-    return distances.most_frequent_class ();
-}
-
-
 distances_list::distances_list (const int k) :
     k (k)
 {}
@@ -85,4 +68,47 @@ classifier::class_type distances_list::most_frequent_class () const
         }
 
     return retval;
+}
+
+
+classifier::classifier (const int k, metric_type metric) :
+    k (k), metric (std::move (metric))
+{}
+
+classifier::~classifier () {}
+
+
+simple_classifier::simple_classifier (const int k, metric_type metric,
+                                      const dataset &data) :
+    classifier (k, std::move (metric)),
+    data (data)
+{}
+
+simple_classifier::~simple_classifier () {}
+
+classifier::class_type simple_classifier::classify (const entry &e2) const
+{
+    distances_list distances (k);
+
+    data.visit ([&] (const entry &e1, class_type clss)
+                {
+                    distances.insert (metric (e1, e2), clss);
+                });
+
+    return distances.most_frequent_class ();
+}
+
+
+tree_classifier::tree_classifier (const int k, metric_type metric,
+                                  const dataset &data) :
+    classifier (k, std::move (metric))
+{
+    // TODO: index
+}
+
+tree_classifier::~tree_classifier () {}
+
+classifier::class_type tree_classifier::classify (const entry &e) const
+{
+    // TODO: traverse tree
 }

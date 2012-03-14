@@ -94,11 +94,12 @@ int main (int argc, char **argv)
     normalizer.apply (training);
     normalizer.apply (test);
 
-    knn::classifier classifier (k,
-                                metric == "euclidean" ?
-                                &knn::metrics::euclidean :
-                                &knn::metrics::cosine,
-                                training);
+    std::unique_ptr<knn::classifier> classifier
+        (new knn::simple_classifier(k,
+                                    metric == "euclidean" ?
+                                    &knn::metrics::euclidean :
+                                    &knn::metrics::cosine,
+                                    training));
 
     int total = 0;
     int correct = 0;
@@ -108,7 +109,7 @@ int main (int argc, char **argv)
                 {
                     ++total;
 
-                    if (clss == classifier.classify (e))
+                    if (clss == classifier->classify (e))
                         ++correct;
                 });
     auto end_time = std::chrono::high_resolution_clock::now ();
