@@ -1,4 +1,5 @@
 #include <cmath>
+#include <iostream>
 #include <metrics.hh>
 
 double knn::metrics::euclidean (const entry &e1, const entry &e2)
@@ -29,5 +30,6 @@ double knn::metrics::cosine (const entry &e1, const entry &e2)
                   sq_sum2 += value2 * value2;
               });
 
-    return double (numerator) / (std::sqrt (sq_sum1) * std::sqrt (sq_sum2));
+    // Return reciprocal for a unified interface
+    return (std::sqrt (sq_sum1) * std::sqrt (sq_sum2)) / double (numerator);
 }
