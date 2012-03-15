@@ -1,3 +1,4 @@
+#include <cassert>
 #include <cluster-tree.hh>
 
 using knn::cluster_tree;
@@ -33,8 +34,8 @@ namespace {
         void insert (const nodeptr &node);
 
         std::set<nodeptr> phi () const;
-        double gamma () const                   {return _gamma;}
-        int phisize () const;          {return nodes.size ();}
+        double gamma () const   {return _gamma;}
+        int phisize () const    {return nodes.size ();}
 
     private:
         const nodeptr main_node;
@@ -92,7 +93,8 @@ void node_stats::trim ()
 
 namespace {
     std::map<nodeptr, node_stats>
-    calculate_localities (std::set<nodeptr> &nodes)
+    calculate_localities (std::set<nodeptr> &nodes,
+                          const knn::metric_type &metric)
     {
         std::map<nodeptr, node_stats> localities;
 
@@ -103,8 +105,10 @@ namespace {
                 if (n1 != n2)
                     stats.insert (n2);
 
-            assert (localities.insert (std::move (n1),
-                                       std::move (stats)).second);
+            bool inserted =
+                localities.insert ({std::move (n1), std::move (stats)}).second;
+
+            assert (inserted);
         }
 
         return localities;
@@ -151,13 +155,15 @@ cluster_tree::cluster_tree (const dataset &data, metric_type m) :
     // Construct initial hypernodes (subtrees)
     std::set<nodeptr> hypernodes;
     while (!nodes.empty ()) {
-        auto localities = calculate_localities (nodes);
+        auto localities = calculate_localities (nodes, metric);
 
         bool inserted =
             hypernodes.insert (build_hypernode (nodes, localities)).second;
 
         assert (inserted);
     }
+
+    assert (!hypernodes.empty ());
 
     // Cluster the hypernodes
     // TODO: Implement
