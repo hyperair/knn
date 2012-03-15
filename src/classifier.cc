@@ -101,14 +101,13 @@ classifier::class_type simple_classifier::classify (const entry &e2) const
 
 tree_classifier::tree_classifier (const int k, metric_type metric,
                                   const dataset &data) :
-    classifier (k, std::move (metric))
-{
-    // TODO: index
-}
+    classifier (k, std::move (metric)),
+    tree (data, this->metric)
+{}
 
 tree_classifier::~tree_classifier () {}
 
 classifier::class_type tree_classifier::classify (const entry &e) const
 {
-    // TODO: traverse tree
+    return tree.classify (e);
 }

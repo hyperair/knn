@@ -4,6 +4,7 @@
 #include <functional>
 #include <metrics.hh>
 #include <dataset.hh>
+#include <cluster-tree.hh>
 
 namespace knn
 {
@@ -43,6 +44,7 @@ namespace knn
         virtual class_type classify (const entry &e) const;
 
     private:
+        cluster_tree tree;
     };
 }
 
