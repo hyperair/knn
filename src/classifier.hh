@@ -2,6 +2,7 @@
 #define CLASSIFY_HH
 
 #include <functional>
+#include <metrics.hh>
 #include <dataset.hh>
 
 namespace knn
@@ -9,8 +10,6 @@ namespace knn
     class classifier
     {
     public:
-        typedef std::function<double (const entry &, const entry &)>
-        metric_type;
         typedef dataset::class_type class_type;
 
         classifier (int k, metric_type metric);
