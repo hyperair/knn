@@ -1,15 +1,17 @@
 #include <cassert>
+#include <numeric>
+#include <vector>
+#include <stats.hh>
 #include <cluster-tree.hh>
+#include <cluster-tree-helpers/cluster.hh>
 #include <cluster-tree-helpers/node-stats.hh>
 
 using knn::cluster_tree;
 using namespace knn::cluster_tree_helpers;
 using knn::entry;
 
-    nodes.erase (i, nodes.end ());
-}
+typedef cluster_tree::nodeptr nodeptr;
 
-
 namespace {
     std::map<nodeptr, node_stats>
     calculate_localities (std::set<nodeptr> &nodes,
@@ -33,7 +35,7 @@ namespace {
         return localities;
     }
 
-    nodeptr build_hypernode (std::set<nodeptr> nodes,
+    nodeptr build_hypernode (std::set<nodeptr> &nodes,
                              std::map<nodeptr, node_stats> &localities)
     {
         unsigned int max_phisize = 0;
@@ -58,6 +60,48 @@ namespace {
         }
 
         return hypernode;
+    }
+
+    double get_cluster_radius (std::set<nodeptr> &nodes,
+                               const knn::metric_type &metric,
+                               int level)
+    {
+        std::set<std::pair<nodeptr, nodeptr> > visited;
+
+        // Construct list of distances
+        std::vector<double> distances;
+
+        for (const nodeptr &n1 : nodes) {
+            for (const nodeptr &n2 : nodes) {
+                if (visited.find ({n2, n1}) != visited.end ())
+                    continue;
+
+                distances.push_back (metric (n1->entry_ (), n2->entry_ ()));
+                visited.insert ({n1, n2});
+            }
+        }
+
+        double mean = knn::stats::mean (distances.begin (), distances.end ());
+        double stdev = knn::stats::stdev (distances.begin (), distances.end (),
+                                          mean);
+
+        return mean - 2 * stdev / level;
+    }
+
+    std::set<nodeptr> make_clusters (std::set<nodeptr> nodes, double radius)
+    {
+        std::vector<cluster> clusters;
+
+        for (const nodeptr &n : nodes) {
+            
+        }
+
+        std::set<nodeptr> centroids;
+
+        for (const cluster &c : clusters)
+            centroids.insert (c.centroid ());
+
+        return centroids;
     }
 }
 
@@ -85,7 +129,17 @@ cluster_tree::cluster_tree (const dataset &data, metric_type m) :
     assert (!hypernodes.empty ());
 
     // Cluster the hypernodes
-    // TODO: Implement
+    std::set<nodeptr> current_level = std::move (hypernodes);
+    int i = 1;
+
+    while (current_level.size () > 1) {
+        std::set<nodeptr> next_level;
+
+        double radius = get_cluster_radius (current_level, metric, ++i);
+        current_level = make_clusters (std::move (current_level), radius);
+    }
+
+    assert (current_level.size () == 1);
 }
 
 knn::dataset::class_type cluster_tree::classify (const entry &) const
