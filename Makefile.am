@@ -16,7 +16,9 @@ knn_SOURCES =					\
 	src/normalizer.cc			\
 	src/cluster-tree.hh			\
 	src/cluster-tree.cc			\
-	src/stats.hh
+	src/stats.hh				\
+	src/cluster-tree-helpers/node-stats.hh	\
+	src/cluster-tree-helpers/node-stats.cc
 
 knn_LDADD = \
 	$(BOOST_PROGRAM_OPTIONS_LIB)

@@ -1,91 +1,10 @@
 #include <cassert>
 #include <cluster-tree.hh>
+#include <cluster-tree-helpers/node-stats.hh>
 
 using knn::cluster_tree;
-typedef cluster_tree::nodeptr nodeptr;
-
-class cluster_tree::node
-{
-public:
-    node (entry entry, const dataset::class_type clss) :
-        _entry (std::move (entry)), _class (clss) {}
-
-    // some accessor functions
-    const entry &entry_ () const {return _entry;}
-    dataset::class_type class_ () const {return _class;}
-    const std::set<nodeptr> &children () const {return _children;}
-
-    void insert_child (const nodeptr &node) {_children.insert (node);}
-
-private:
-    const entry               _entry;
-    const dataset::class_type _class;
-
-    std::set<nodeptr>         _children;
-};
-
-
-namespace {
-    class node_stats
-    {
-    public:
-        node_stats (const nodeptr &node, knn::metric_type metric);
-
-        void insert (const nodeptr &node);
-
-        std::set<nodeptr> phi () const;
-        double gamma () const   {return _gamma;}
-        int phisize () const    {return nodes.size ();}
-
-    private:
-        const nodeptr main_node;
-        std::list<std::pair<double, nodeptr> > nodes;
-        double _gamma;
-
-        knn::metric_type metric;
-
-        void trim ();
-    };
-}
-
-node_stats::node_stats (const nodeptr &node, knn::metric_type metric) :
-    main_node (node), metric (std::move (metric)) {}
-
-void node_stats::insert (const nodeptr &node)
-{
-    const double distance = metric (node->entry_ (), main_node->entry_ ());
-
-    if (node->class_ () == main_node->class_ ()) {
-        for (auto i = nodes.begin (); i != nodes.end (); ++i)
-            if (i->first > distance) {
-                nodes.insert (i, {distance, node});
-                break;
-            }
-
-    } else {
-        if (distance < _gamma) {
-            _gamma = distance;
-            trim ();
-        }
-    }
-}
-
-std::set<nodeptr> node_stats::phi () const
-{
-    std::set<nodeptr> phi;
-
-    for (auto &i : nodes)
-        phi.insert (i.second);
-
-    return phi;
-}
-
-void node_stats::trim ()
-{
-    auto i = nodes.begin ();
-    for (; i != nodes.end (); ++i)
-        if (_gamma < i->first)
-            break;
+using namespace knn::cluster_tree_helpers;
+using knn::entry;
 
     nodes.erase (i, nodes.end ());
 }
