@@ -1,6 +1,7 @@
 #include <cassert>
 #include <numeric>
 #include <vector>
+#include <limits>
 #include <stats.hh>
 #include <cluster-tree.hh>
 #include <cluster-tree-helpers/cluster.hh>
@@ -88,18 +89,50 @@ namespace {
         return mean - 2 * stdev / level;
     }
 
-    std::set<nodeptr> make_clusters (std::set<nodeptr> nodes, double radius)
+    std::set<nodeptr> make_clusters (std::set<nodeptr> nodes,
+                                     const double radius,
+                                     knn::metric_type metric)
     {
         std::vector<cluster> clusters;
 
-        for (const nodeptr &n : nodes) {
-            
+        for (const nodeptr &node : nodes) {
+            double min_distance = std::numeric_limits<double>::max ();
+
+            // Search for nearest cluster to insert into
+            cluster *nearest_cluster = nullptr;
+
+            for (cluster &c : clusters) {
+                nodeptr centroid = c.centroid ();
+                double distance = metric (centroid->entry_ (), node->entry_ ());
+
+                if (distance < min_distance) {
+                    nearest_cluster = &c;
+                    min_distance = distance;
+                }
+            }
+
+            if (nearest_cluster)                    // Found a cluster
+                if (nearest_cluster->insert (node)) // Inserted, move on
+                    continue;
+
+            // Could not insert cluster, so create new cluster
+            clusters.push_back (cluster (node, radius, metric));
         }
 
+        // Create set of centroids
         std::set<nodeptr> centroids;
 
-        for (const cluster &c : clusters)
-            centroids.insert (c.centroid ());
+        for (const cluster &c : clusters) {
+            nodeptr centroid = c.centroid ();
+
+            // Centroid becomes cluster parent
+            c.visit_nodes ([&] (const nodeptr &node)
+                           {
+                               centroid->insert_child (node);
+                           });
+
+            centroids.insert (centroid);
+        }
 
         return centroids;
     }
@@ -136,8 +169,11 @@ cluster_tree::cluster_tree (const dataset &data, metric_type m) :
         std::set<nodeptr> next_level;
 
         double radius = get_cluster_radius (current_level, metric, ++i);
-        current_level = make_clusters (std::move (current_level), radius);
+        current_level = make_clusters (std::move (current_level), radius,
+                                       metric);
     }
+
+    root = *current_level.begin ();
 
     assert (current_level.size () == 1);
 }

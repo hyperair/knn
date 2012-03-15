@@ -20,6 +20,7 @@ namespace knn
 
     private:
         const metric_type metric;
+        nodeptr root;
     };
 
     class cluster_tree::node

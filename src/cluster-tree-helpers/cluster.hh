@@ -26,11 +26,18 @@ namespace knn
             bool insert (const cluster_tree::nodeptr &node);
             cluster_tree::nodeptr centroid () const;
 
+            template <typename Functor>
+            void visit_nodes (Functor functor) const
+            {
+                for (const auto &i : nodes)
+                    functor (i);
+            }
+
         private:
             std::set<cluster_tree::nodeptr> nodes;
             std::map<entry::index_type, entry::value_type> sums;
-            const double radius;
-            const dataset::class_type class_;
+            double radius;
+            dataset::class_type class_;
             metric_type metric;
         };
 
