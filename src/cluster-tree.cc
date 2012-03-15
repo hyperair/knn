@@ -7,23 +7,20 @@ class cluster_tree::node
 {
 public:
     node (entry entry, const dataset::class_type clss) :
-        _entry (std::move (entry)), _class (clss), _gamma (0.0) {}
+        _entry (std::move (entry)), _class (clss) {}
 
-    double gamma () const                       {return _gamma;}
-    void gamma (double v)                       {_gamma = v;}
+    // some accessor functions
+    const entry &entry_ () const {return _entry;}
+    dataset::class_type class_ () const {return _class;}
+    const std::set<nodeptr> &children () const {return _children;}
 
-    const entry &entry_ () const                {return _entry;}
-
-    const std::set<nodeptr> &phi () const       {return _phi;}
-    void phi (std::set<nodeptr> newphi)         {_phi = std::move (newphi);}
-
-    dataset::class_type class_ () const   {return _class;}
+    void insert_child (const nodeptr &node) {_children.insert (node);}
 
 private:
     const entry               _entry;
     const dataset::class_type _class;
-    double                    _gamma; // distance to nearest distinct node
-    std::set<nodeptr>         _phi;   // nodes nearer than gamma
+
+    std::set<nodeptr>         _children;
 };
 
 
@@ -37,6 +34,7 @@ namespace {
 
         std::set<nodeptr> phi () const;
         double gamma () const                   {return _gamma;}
+        int phisize () const;          {return nodes.size ();}
 
     private:
         const nodeptr main_node;
@@ -92,30 +90,77 @@ void node_stats::trim ()
 }
 
 
+namespace {
+    std::map<nodeptr, node_stats>
+    calculate_localities (std::set<nodeptr> &nodes)
+    {
+        std::map<nodeptr, node_stats> localities;
+
+        for (const nodeptr &n1 : nodes) {
+            node_stats stats (n1, metric);
+
+            for (const nodeptr &n2 : nodes)
+                if (n1 != n2)
+                    stats.insert (n2);
+
+            assert (localities.insert (std::move (n1),
+                                       std::move (stats)).second);
+        }
+
+        return localities;
+    }
+
+    nodeptr build_hypernode (std::set<nodeptr> nodes,
+                             std::map<nodeptr, node_stats> &localities)
+    {
+        unsigned int max_phisize = 0;
+        nodeptr hypernode;
+        std::set<nodeptr> phi;
+
+        for (const auto &i : localities) {
+            unsigned int phisize = i.second.phisize ();
+
+            if (max_phisize < phisize) {
+                max_phisize = phisize;
+                hypernode = i.first;
+                phi = i.second.phi ();
+            }
+        }
+
+        assert (hypernode);
+
+        for (const nodeptr &i : phi) {
+            hypernode->insert_child (i);
+            nodes.erase (i);
+        }
+
+        return hypernode;
+    }
+}
+
 cluster_tree::cluster_tree (const dataset &data, metric_type m) :
     metric (std::move (m))
 {
+    // Construct set of nodes
     std::set<nodeptr> nodes;
-
     data.visit ([&] (const entry &e, const dataset::class_type c)
                 {
                     nodes.insert (nodeptr (new node (e, c)));
                 });
 
-    // Step 1: Compute localities of all nodes
-    for (const nodeptr &n1 : nodes) {
-        node_stats stats (n1, metric);
+    // Construct initial hypernodes (subtrees)
+    std::set<nodeptr> hypernodes;
+    while (!nodes.empty ()) {
+        auto localities = calculate_localities (nodes);
 
-        for (const nodeptr &n2 : nodes)
-            if (n1 != n2)
-                stats.insert (n2);
+        bool inserted =
+            hypernodes.insert (build_hypernode (nodes, localities)).second;
 
-        n1->gamma (stats.gamma ());
-        n1->phi (stats.phi ());
+        assert (inserted);
     }
 
-    // Step 2:
-    // TODO:
+    // Cluster the hypernodes
+    // TODO: Implement
 }
 
 knn::dataset::class_type cluster_tree::classify (const entry &) const
