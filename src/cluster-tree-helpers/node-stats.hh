@@ -23,14 +23,14 @@ namespace knn
             double gamma () const   {return _gamma;}
             int phisize () const    {return nodes.size ();}
 
+            void trim ();
+
         private:
             const nodeptr main_node;
             std::vector<std::pair<double, nodeptr> > nodes;
             double _gamma;
 
             knn::metric_type metric;
-
-            void trim ();
         };
     }
 }
