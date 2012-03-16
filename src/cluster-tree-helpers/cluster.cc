@@ -24,7 +24,7 @@ bool cluster::insert (const nodeptr &node)
 
         // Roll back
         sums = std::move (backup_sums);
-        nodes = std::move (nodes);
+        nodes = std::move (backup_nodes);
 
         return false;
     }
