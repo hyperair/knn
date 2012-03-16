@@ -54,12 +54,12 @@ namespace {
             }
         }
 
-        assert (hypernode);
-
         for (const nodeptr &i : phi) {
             hypernode->insert_child (i);
             nodes.erase (i);
         }
+
+        nodes.erase (hypernode);
 
         return hypernode;
     }
