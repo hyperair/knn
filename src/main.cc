@@ -103,15 +103,22 @@ int main (int argc, char **argv)
         metric_string == "euclidean" ? &knn::metrics::euclidean :
                                        &knn::metrics::cosine;
 
+
+    auto start_time = std::chrono::high_resolution_clock::now ();
     std::unique_ptr<knn::classifier> classifier
         (classifier_string == "simple" ?
          (knn::classifier *)new knn::simple_classifier (k, metric, training) :
          (knn::classifier *)new knn::tree_classifier (k, metric, training));
+    auto end_time = std::chrono::high_resolution_clock::now ();
+
+    std::cout << "Indexing completed in "
+              << std::chrono::duration<double> (end_time - start_time).count ()
+              << "s." << std::endl;
 
     int total = 0;
     int correct = 0;
 
-    auto start_time = std::chrono::high_resolution_clock::now ();
+    start_time = std::chrono::high_resolution_clock::now ();
     test.visit ([&] (const knn::entry &e, knn::dataset::class_type clss)
                 {
                     ++total;
@@ -119,7 +126,7 @@ int main (int argc, char **argv)
                     if (clss == classifier->classify (e))
                         ++correct;
                 });
-    auto end_time = std::chrono::high_resolution_clock::now ();
+    end_time = std::chrono::high_resolution_clock::now ();
 
     std::cout << "Correctly classified " << correct << " out of " << total
               << " entries, with an accuracy of "
