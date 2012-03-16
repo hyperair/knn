@@ -14,13 +14,14 @@ namespace knn
         class node;
         typedef std::shared_ptr<node> nodeptr;
 
-        cluster_tree (const dataset &data, metric_type metric);
+        cluster_tree (int k, metric_type metric, const dataset &data);
 
         dataset::class_type classify (const entry &e) const;
 
     private:
         const metric_type metric;
         nodeptr root;
+        int k;
     };
 
     class cluster_tree::node

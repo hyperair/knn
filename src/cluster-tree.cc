@@ -138,8 +138,8 @@ namespace {
     }
 }
 
-cluster_tree::cluster_tree (const dataset &data, metric_type m) :
-    metric (std::move (m))
+cluster_tree::cluster_tree (int k, metric_type m, const dataset &data) :
+    metric (std::move (m)), k (k)
 {
     // Construct set of nodes
     std::set<nodeptr> nodes;

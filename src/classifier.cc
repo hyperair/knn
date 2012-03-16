@@ -40,7 +40,7 @@ classifier::class_type simple_classifier::classify (const entry &e2) const
 tree_classifier::tree_classifier (const int k, metric_type metric,
                                   const dataset &data) :
     classifier (k, std::move (metric)),
-    tree (data, this->metric)
+    tree (k, this->metric, data)
 {}
 
 tree_classifier::~tree_classifier () {}
