@@ -43,7 +43,7 @@ namespace knn
             mutable std::shared_ptr<scaling_info> _scaling_info;
         };
 
-        std::map<index_type, minmax> minmax_map;
+        std::unordered_map<index_type, minmax> minmax_map;
     };
 }
 

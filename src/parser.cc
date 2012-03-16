@@ -4,8 +4,8 @@
 #include <cassert>
 #include <parser.hh>
 
-typedef std::map<knn::entry::index_type,
-                 knn::entry::value_type> valuemap_type;
+typedef std::unordered_map<knn::entry::index_type,
+                           knn::entry::value_type> valuemap_type;
 void knn::visit_file (const std::string &path,
                       const std::function<void (entry &&,
                                                 dataset::class_type)> &visitor)

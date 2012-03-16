@@ -42,7 +42,7 @@ namespace knn
 
         private:
             std::set<cluster_tree::nodeptr> nodes;
-            std::map<entry::index_type, entry::value_type> sums;
+            std::unordered_map<entry::index_type, entry::value_type> sums;
             double radius;
             dataset::class_type class_;
             metric_type metric;

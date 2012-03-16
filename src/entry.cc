@@ -4,7 +4,7 @@
 
 using knn::entry;
 
-entry::entry (std::map<int, double> values) :
+entry::entry (std::unordered_map<int, double> values) :
     values (std::move (values))
 {}
 

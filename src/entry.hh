@@ -2,7 +2,7 @@
 #define ENTRY_HH
 
 #include <set>
-#include <map>
+#include <unordered_map>
 #include <exception>
 #include <functional>
 #include <iostream>
@@ -15,7 +15,7 @@ namespace knn
         typedef int index_type;
         typedef double value_type;
 
-        explicit entry (std::map<index_type, value_type> values);
+        explicit entry (std::unordered_map<index_type, value_type> values);
 
         value_type operator[] (index_type index) const;
         value_type &operator[] (index_type index);
@@ -27,7 +27,7 @@ namespace knn
         void expand_dimensions (Iterator begin, const Iterator &end);
 
     private:
-        std::map<index_type, value_type>  values;
+        std::unordered_map<index_type, value_type>  values;
     };
 
     std::ostream &operator<< (std::ostream &out, const entry &e);
