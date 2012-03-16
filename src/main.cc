@@ -87,12 +87,16 @@ int main (int argc, char **argv)
 
     std::cout << "k = " << k << std::endl
               << "metric = " << metric_string << std::endl
+              << "classifier = " << classifier_string << std::endl
               << "training_set_file = " << training_set_file << std::endl
               << "test_set_file = " << test_set_file << std::endl;
 
+    std::cout << "Reading training_set_file..." << std::endl;
     knn::dataset training = knn::parse_file (training_set_file);
+    std::cout << "Reading test_set_file..." << std::endl;
     knn::dataset test = knn::parse_file (test_set_file);
 
+    std::cout << "Normalizing dimensions..." << std::endl;
     knn::normalizer normalizer;
     normalizer.scan (training);
     normalizer.scan (test);
@@ -104,6 +108,7 @@ int main (int argc, char **argv)
                                        &knn::metrics::cosine;
 
 
+    std::cout << "Indexing dataset..." << std::endl;
     auto start_time = std::chrono::high_resolution_clock::now ();
     std::unique_ptr<knn::classifier> classifier
         (classifier_string == "simple" ?
