@@ -34,7 +34,9 @@ void knn::visit_file (const std::string &path,
             entry::value_type value;
 
             ss_token >> index;
-            assert (ss_token.get () == ':');
+            char separator = ss_token.get ();
+            (void) separator;
+            assert (separator == ':');
             ss_token >> value;
 
             values.insert ({index, value});
