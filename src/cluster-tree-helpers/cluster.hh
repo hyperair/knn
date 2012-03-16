@@ -27,6 +27,7 @@ namespace knn
                             {
                                 sums.insert ({i, v});
                             });
+                assert (!nodes.empty ());
             }
 
             bool insert (const cluster_tree::nodeptr &node);
