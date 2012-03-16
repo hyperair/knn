@@ -12,7 +12,7 @@ namespace knn
         template <typename Iterator>
         double mean (Iterator begin, Iterator end)
         {
-            auto sum = std::accumulate (begin, end, 0);
+            auto sum = std::accumulate (begin, end, 0.0l);
 
             return double (sum) / std::distance (begin, end);
         }
