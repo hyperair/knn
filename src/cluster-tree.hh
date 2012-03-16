@@ -2,7 +2,7 @@
 #define CLUSTER_TREE_HH
 
 #include <memory>
-#include <set>
+#include <unordered_set>
 #include <dataset.hh>
 #include <metrics.hh>
 
@@ -36,7 +36,7 @@ namespace knn
         // some accessor functions
         const entry &entry_ () const {return _entry;}
         dataset::class_type class_ () const {return _class;}
-        const std::set<nodeptr> &children () const {return _children;}
+        const std::unordered_set<nodeptr> &children () const {return _children;}
 
         void insert_child (const nodeptr &node) {_children.insert (node);}
 
@@ -46,7 +46,7 @@ namespace knn
         const entry               _entry;
         const dataset::class_type _class;
 
-        std::set<nodeptr>         _children;
+        std::unordered_set<nodeptr> _children;
 
         const bool _is_centroid;
     };

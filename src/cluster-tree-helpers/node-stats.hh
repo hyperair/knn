@@ -19,7 +19,7 @@ namespace knn
 
             void insert (const nodeptr &node);
 
-            std::set<nodeptr> phi () const;
+            std::unordered_set<nodeptr> phi () const;
             double gamma () const   {return _gamma;}
             int phisize () const    {return nodes.size ();}
 

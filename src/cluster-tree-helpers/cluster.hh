@@ -1,8 +1,8 @@
 #ifndef CTH_CLUSTER_HH
 #define CTH_CLUSTER_HH
 
-#include <set>
-#include <map>
+#include <unordered_set>
+#include <unordered_map>
 #include <cluster-tree.hh>
 #include <dataset.hh>
 #include <entry.hh>
@@ -41,7 +41,7 @@ namespace knn
             }
 
         private:
-            std::set<cluster_tree::nodeptr> nodes;
+            std::unordered_set<cluster_tree::nodeptr> nodes;
             std::unordered_map<entry::index_type, entry::value_type> sums;
             double radius;
             dataset::class_type class_;

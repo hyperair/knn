@@ -31,9 +31,9 @@ void node_stats::insert (const nodeptr &node)
     }
 }
 
-std::set<node_stats::nodeptr> node_stats::phi () const
+std::unordered_set<node_stats::nodeptr> node_stats::phi () const
 {
-    std::set<nodeptr> phi;
+    std::unordered_set<nodeptr> phi;
 
     for (auto &i : nodes)
         phi.insert (i.second);

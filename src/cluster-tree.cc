@@ -15,11 +15,11 @@ using knn::entry;
 typedef cluster_tree::nodeptr nodeptr;
 
 namespace {
-    std::map<nodeptr, node_stats>
-    calculate_localities (std::set<nodeptr> &nodes,
+    std::unordered_map<nodeptr, node_stats>
+    calculate_localities (std::unordered_set<nodeptr> &nodes,
                           const knn::metric_type &metric)
     {
-        std::map<nodeptr, node_stats> localities;
+        std::unordered_map<nodeptr, node_stats> localities;
 
         for (const nodeptr &n1 : nodes) {
             node_stats stats (n1, metric);
@@ -38,12 +38,13 @@ namespace {
         return localities;
     }
 
-    nodeptr build_hypernode (std::set<nodeptr> &nodes,
-                             std::map<nodeptr, node_stats> &localities)
+    nodeptr build_hypernode (std::unordered_set<nodeptr> &nodes,
+                             std::unordered_map<nodeptr,
+                                                node_stats> &localities)
     {
         unsigned int max_phisize = 0;
         nodeptr hypernode;
-        std::set<nodeptr> phi;
+        std::unordered_set<nodeptr> phi;
 
         for (const auto &i : localities) {
             unsigned int phisize = i.second.phisize ();
@@ -65,7 +66,7 @@ namespace {
         return hypernode;
     }
 
-    double get_cluster_radius (std::set<nodeptr> &nodes,
+    double get_cluster_radius (std::unordered_set<nodeptr> &nodes,
                                const knn::metric_type &metric,
                                int level)
     {
@@ -91,9 +92,10 @@ namespace {
         return mean - 2 * stdev / level;
     }
 
-    std::set<nodeptr> make_clusters (std::set<nodeptr> nodes,
-                                     const double radius,
-                                     knn::metric_type metric)
+    std::unordered_set<nodeptr>
+    make_clusters (std::unordered_set<nodeptr> nodes,
+                   const double radius,
+                   knn::metric_type metric)
     {
         std::vector<cluster> clusters;
 
@@ -122,7 +124,7 @@ namespace {
         }
 
         // Create set of centroids
-        std::set<nodeptr> centroids;
+        std::unordered_set<nodeptr> centroids;
 
         for (const cluster &c : clusters) {
             nodeptr centroid = c.centroid ();
@@ -144,14 +146,14 @@ cluster_tree::cluster_tree (int k, metric_type m, const dataset &data) :
     metric (std::move (m)), k (k)
 {
     // Construct set of nodes
-    std::set<nodeptr> nodes;
+    std::unordered_set<nodeptr> nodes;
     data.visit ([&] (const entry &e, const dataset::class_type c)
                 {
                     nodes.insert (nodeptr (new node (e, c)));
                 });
 
     // Construct initial hypernodes (subtrees)
-    std::set<nodeptr> hypernodes;
+    std::unordered_set<nodeptr> hypernodes;
     while (!nodes.empty ()) {
         auto localities = calculate_localities (nodes, metric);
 
@@ -167,7 +169,7 @@ cluster_tree::cluster_tree (int k, metric_type m, const dataset &data) :
     assert (!hypernodes.empty ());
 
     // Cluster the hypernodes
-    std::set<nodeptr> current_level = std::move (hypernodes);
+    std::unordered_set<nodeptr> current_level = std::move (hypernodes);
     int i = 1;
 
     while (current_level.size () > 1) {
