@@ -39,5 +39,5 @@ nodeptr cluster::centroid () const
         values.insert ({i.first, i.second / nodes.size ()});
 
     return nodeptr (new cluster_tree::node (entry (std::move (values)),
-                                            class_));
+                                            class_, true));
 }
