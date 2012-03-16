@@ -26,8 +26,11 @@ namespace knn
     class cluster_tree::node
     {
     public:
-        node (entry entry, const dataset::class_type clss) :
-            _entry (std::move (entry)), _class (clss) {}
+        node (entry entry, const dataset::class_type clss,
+              bool is_centroid = false) :
+            _entry (std::move (entry)), _class (clss),
+            _is_centroid (is_centroid)
+        {}
 
         // some accessor functions
         const entry &entry_ () const {return _entry;}
@@ -36,11 +39,15 @@ namespace knn
 
         void insert_child (const nodeptr &node) {_children.insert (node);}
 
+        bool is_centroid () const {return _is_centroid;}
+
     private:
         const entry               _entry;
         const dataset::class_type _class;
 
         std::set<nodeptr>         _children;
+
+        const bool _is_centroid;
     };
 }
 
