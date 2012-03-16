@@ -36,7 +36,10 @@ int main (int argc, char **argv)
          "Number of nearest neighbours to consider")
 
         ("metric,d", bpo::value<std::string> () ->default_value ("euclidean"),
-         "Difference metric (euclidean|cosine)");
+         "Difference metric (euclidean|cosine)")
+
+        ("classifier,c", bpo::value<std::string> () ->default_value ("simple"),
+         "Classifier implementation (simple|tree)");
 
     bpo::options_description hidden;
     hidden.add_options ()
@@ -75,13 +78,15 @@ int main (int argc, char **argv)
         vm["test-set-file"].as<std::string> ();
 
     const int k = vm["neighbours"].as<int> ();
-    const std::string metric = vm["metric"].as<std::string> ();
+    const std::string metric_string = vm["metric"].as<std::string> ();
+    const std::string classifier_string = vm["classifier"].as<std::string> ();
 
-    if (metric != "euclidean" && metric != "cosine")
+    if ((metric_string != "euclidean" && metric_string != "cosine") ||
+        (classifier_string != "simple" && classifier_string != "tree"))
         usage (argv[0], desc);
 
     std::cout << "k = " << k << std::endl
-              << "metric = " << metric << std::endl
+              << "metric = " << metric_string << std::endl
               << "training_set_file = " << training_set_file << std::endl
               << "test_set_file = " << test_set_file << std::endl;
 
@@ -94,12 +99,14 @@ int main (int argc, char **argv)
     normalizer.apply (training);
     normalizer.apply (test);
 
+    knn::metric_type metric =
+        metric_string == "euclidean" ? &knn::metrics::euclidean :
+                                       &knn::metrics::cosine;
+
     std::unique_ptr<knn::classifier> classifier
-        (new knn::simple_classifier(k,
-                                    metric == "euclidean" ?
-                                    &knn::metrics::euclidean :
-                                    &knn::metrics::cosine,
-                                    training));
+        (classifier_string == "simple" ?
+         (knn::classifier *)new knn::simple_classifier (k, metric, training) :
+         (knn::classifier *)new knn::tree_classifier (k, metric, training));
 
     int total = 0;
     int correct = 0;
