@@ -3,6 +3,7 @@
 #include <vector>
 #include <limits>
 #include <stats.hh>
+#include <distances-list.hh>
 #include <cluster-tree.hh>
 #include <cluster-tree-helpers/cluster.hh>
 #include <cluster-tree-helpers/node-stats.hh>
@@ -173,13 +174,49 @@ cluster_tree::cluster_tree (int k, metric_type m, const dataset &data) :
                                        metric);
     }
 
-    root = *current_level.begin ();
-
     assert (current_level.size () == 1);
+
+    root = *current_level.begin ();
 }
 
-knn::dataset::class_type cluster_tree::classify (const entry &) const
+knn::dataset::class_type cluster_tree::classify (const entry &e) const
 {
-    // TODO: Implement
-    return 0;
+    std::vector<nodeptr> current_level {root};
+
+    // Navigate through each centroid level
+    while ((*current_level.begin ())->is_centroid ()) {
+        distances_list<nodeptr> distances (k);
+
+        for (const nodeptr &n : current_level)
+            for (const nodeptr &child : n->children ())
+                distances.insert (metric (child->entry_ (), e), child);
+
+        current_level.clear ();
+        distances.visit ([&] (double, nodeptr node)
+                         {current_level.push_back (node);});
+
+    }
+
+    // current_level contains k (or less) hypernodes.
+    // Check if the class is the same for all hypernodes
+    dataset::class_type class_ = current_level.front ()->class_ ();
+    bool all_same = true;
+
+    for (const nodeptr &n : current_level) {
+        if (class_ != n->class_ ()) {
+            all_same = false;
+            break;
+        }
+    }
+
+    if (all_same)
+        return class_;
+
+    // Not same, so head down to the base level and do a standard knn
+    distances_list<dataset::class_type> voter (k);
+    for (const nodeptr &n : current_level)
+        for (const nodeptr &child : n->children ())
+            voter.insert (metric (e, child->entry_ ()), child->class_ ());
+
+    return voter.most_frequent ();
 }
