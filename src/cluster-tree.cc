@@ -154,9 +154,10 @@ cluster_tree::cluster_tree (int k, metric_type m, const dataset &data) :
     while (!nodes.empty ()) {
         auto localities = calculate_localities (nodes, metric);
 
-        bool inserted =
-            hypernodes.insert (build_hypernode (nodes, localities)).second;
+        nodeptr hypernode = build_hypernode (nodes, localities);
+        assert (hypernode);
 
+        bool inserted = hypernodes.insert (hypernode).second;
         assert (inserted);
     }
 
