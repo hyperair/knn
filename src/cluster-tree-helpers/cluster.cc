@@ -36,6 +36,8 @@ nodeptr cluster::centroid () const
 {
     decltype(sums) values;
 
+    assert (!nodes.empty ());
+
     for (const auto &i : sums)
         values.insert ({i.first, i.second / nodes.size ()});
 
