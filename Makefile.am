@@ -33,6 +33,10 @@ knn_CPPFLAGS =					\
 	-I$(srcdir)/src/			\
 	$(BOOST_CPPFLAGS)
 
+if !ENABLE_ASSERTIONS
+knn_CPPFLAGS += -DNDEBUG
+endif
+
 knn_LDFLAGS =					\
 	$(BOOST_LDFLAGS)
 

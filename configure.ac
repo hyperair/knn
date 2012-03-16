@@ -32,6 +32,12 @@ AC_ARG_ENABLE([warnings],
               [enable_warnings=no])
 AM_CONDITIONAL([ENABLE_WARNINGS], [test "$enable_warnings" = "yes"])
 
+# Optionally enable assertions
+AC_ARG_ENABLE([assertions],
+              [AS_HELP_STRING([--enable-assertions], [Enable assertions])],,
+              [enable_assertions=no])
+AM_CONDITIONAL([ENABLE_ASSERTIONS], [test "$enable_assertions" = "yes"])
+
 AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT

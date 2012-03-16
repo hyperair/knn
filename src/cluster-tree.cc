@@ -31,6 +31,7 @@ namespace {
             bool inserted =
                 localities.insert ({std::move (n1), std::move (stats)}).second;
 
+            (void) inserted;
             assert (inserted);
         }
 
@@ -158,6 +159,8 @@ cluster_tree::cluster_tree (int k, metric_type m, const dataset &data) :
         assert (hypernode);
 
         bool inserted = hypernodes.insert (hypernode).second;
+
+        (void) inserted;
         assert (inserted);
     }
 
