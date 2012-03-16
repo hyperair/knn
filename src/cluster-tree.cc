@@ -168,8 +168,6 @@ cluster_tree::cluster_tree (int k, metric_type m, const dataset &data) :
     int i = 1;
 
     while (current_level.size () > 1) {
-        std::set<nodeptr> next_level;
-
         double radius = get_cluster_radius (current_level, metric, ++i);
         current_level = make_clusters (std::move (current_level), radius,
                                        metric);
