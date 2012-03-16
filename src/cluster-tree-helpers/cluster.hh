@@ -17,11 +17,17 @@ namespace knn
         public:
             cluster (cluster_tree::nodeptr node, double radius,
                      metric_type metric) :
-                nodes {std::move (node)},
+                nodes {node},
                 radius (radius),
                 class_ (node->class_ ()),
                 metric (std::move (metric))
-            {}
+            {
+                node->entry_ ()
+                    .visit ([&] (entry::index_type i, entry::value_type v)
+                            {
+                                sums.insert ({i, v});
+                            });
+            }
 
             bool insert (const cluster_tree::nodeptr &node);
             cluster_tree::nodeptr centroid () const;

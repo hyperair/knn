@@ -1,3 +1,4 @@
+#include <cassert>
 #include <cluster-tree-helpers/cluster.hh>
 
 using knn::cluster_tree_helpers::cluster;
@@ -37,6 +38,8 @@ nodeptr cluster::centroid () const
 
     for (const auto &i : sums)
         values.insert ({i.first, i.second / nodes.size ()});
+
+    assert (!values.empty ());
 
     return nodeptr (new cluster_tree::node (entry (std::move (values)),
                                             class_, true));
