@@ -75,7 +75,7 @@ namespace {
 
         for (const nodeptr &n1 : nodes) {
             for (const nodeptr &n2 : nodes) {
-                if (visited.find ({n2, n1}) != visited.end ())
+                if (n1 == n2 || visited.find ({n2, n1}) != visited.end ())
                     continue;
 
                 distances.push_back (metric (n1->entry_ (), n2->entry_ ()));
