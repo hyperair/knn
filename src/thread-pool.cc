@@ -1,5 +1,6 @@
 #include <cassert>
 #include <thread-pool.hh>
+#include <iostream>
 
 using knn::thread_pool;
 
@@ -22,8 +23,7 @@ thread_pool::~thread_pool ()
     condvar.notify_all ();
 
     for (auto &i : threads)
-        if (i.joinable ())
-            i.join ();
+        i.join ();
 }
 
 void thread_pool::thread_func ()
@@ -36,6 +36,9 @@ void thread_pool::thread_func ()
 
             while (!cancelled && tasks.empty ())
                 condvar.wait (lock);
+
+            if (cancelled)
+                return;
 
             task = tasks.front ();
             tasks.pop ();
