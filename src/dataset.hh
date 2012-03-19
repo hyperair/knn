@@ -34,6 +34,8 @@ namespace knn
 
         const std::set<index_type> &dimensions () const {return *_dimensions;}
 
+        size_t size () const {return entries.size ();}
+
     private:
         std::list<std::pair<entry, class_type> > entries;
         std::unique_ptr<std::set<index_type> > _dimensions;
