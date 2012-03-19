@@ -18,6 +18,8 @@ knn_SOURCES =					\
 	src/cluster-tree.cc			\
 	src/stats.hh				\
 	src/distances-list.hh			\
+	src/thread-pool.hh			\
+	src/thread-pool.cc			\
 	src/cluster-tree-helpers/node-stats.hh	\
 	src/cluster-tree-helpers/node-stats.cc	\
 	src/cluster-tree-helpers/cluster.hh	\
