@@ -3,11 +3,13 @@
 #include <iostream>
 #include <functional>
 #include <chrono>
+#include <future>
 
 #include <parser.hh>
 #include <classifier.hh>
 #include <metrics.hh>
 #include <normalizer.hh>
+#include <thread-pool.hh>
 
 namespace bpo = boost::program_options;
 
@@ -120,17 +122,29 @@ int main (int argc, char **argv)
               << std::chrono::duration<double> (end_time - start_time).count ()
               << "s." << std::endl;
 
-    int total = 0;
-    int correct = 0;
+    std::vector<std::pair<knn::dataset::class_type,
+                          std::shared_future<knn::dataset::class_type> > >
+        results;
+    results.reserve (test.size ());
+
+    knn::thread_pool thread_pool (4);
 
     start_time = std::chrono::high_resolution_clock::now ();
     test.visit ([&] (const knn::entry &e, knn::dataset::class_type clss)
                 {
-                    ++total;
+                    auto func = std::bind (&knn::classifier::classify,
+                                           std::ref (*classifier), e);
+                    auto futureval = thread_pool.async (func);
 
-                    if (clss == classifier->classify (e))
-                        ++correct;
+                    results.push_back ({clss, std::move (futureval)});
                 });
+
+    int correct = 0;
+    for (auto &i : results)
+        if (i.first == i.second.get ())
+            ++correct;
+
+    int total = results.size ();
     end_time = std::chrono::high_resolution_clock::now ();
 
     std::cout << "Correctly classified " << correct << " out of " << total
