@@ -19,6 +19,7 @@ thread_pool::thread_pool (int max_threads) :
 thread_pool::~thread_pool ()
 {
     cancelled = true;
+    condvar.notify_all ();
 
     for (auto &i : threads)
         if (i.joinable ())
