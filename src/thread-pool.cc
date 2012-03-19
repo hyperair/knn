@@ -28,13 +28,13 @@ thread_pool::~thread_pool ()
 
 void thread_pool::thread_func ()
 {
-    while (!cancelled) {
+    for (;;) {
         std::function<void ()> task;
 
         {
             std::unique_lock<std::mutex> lock (mutex);
 
-            while (tasks.empty ())
+            while (!cancelled && tasks.empty ())
                 condvar.wait (lock);
 
             task = tasks.front ();
