@@ -22,7 +22,7 @@ namespace knn
     private:
         const int max_threads;
 
-        bool cancelled;
+        volatile bool cancelled;
 
         std::queue<std::function<void ()> > tasks;
         std::vector<std::thread> threads;
